@@ -1129,7 +1129,7 @@ The application uses `localStorage` for persisting user preferences:
 | `markdown-editor-active-custom-theme` | `useCustomThemes` | `string` | ID of currently active custom theme |
 | `markdown-editor-focus-mode` | `App` | `'true' \| 'false'` | Focus mode enabled state |
 | `markdown-editor-distraction-free-mode` | `App` | `'true' \| 'false'` | Distraction-free mode enabled state |
-| `split-position` | `SplitPane` | `number` (0-100) | Split pane divider position percentage |
+| `split-position` | `SplitPane` | `string` (e.g., `'50'`) | Split pane divider position percentage (parsed as number 0-100) |
 
 **Note:** The `split-position` key does not follow the `markdown-editor-` prefix convention for historical reasons.
 
@@ -1170,13 +1170,16 @@ function buildExportHtml(args: {
 **Example:**
 ```typescript
 import { buildExportHtml } from './utils/buildExportHtml';
+// Note: renderMarkdown is a pure function, NOT a React hook
 import { renderMarkdown } from './hooks/useMarkdown';
 
 const markdown = '# Hello World';
+const renderedHtml = renderMarkdown(markdown); // Can be called anywhere
+
 const html = buildExportHtml({
   title: 'My Document',
   theme: 'dark',
-  bodyHtml: renderMarkdown(markdown),
+  bodyHtml: renderedHtml,
   cssVariablesOverride: {
     '--bg-primary': '#000000'
   }
