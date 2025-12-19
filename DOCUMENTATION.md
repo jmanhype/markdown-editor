@@ -551,7 +551,7 @@ interface StatusBarProps {
 **Display:**
 - Word count
 - Character count
-- Estimated reading time (200 WPM)
+- Estimated reading time (200 WPM, rounded up with `Math.ceil`)
 
 **Example:**
 ```tsx
@@ -881,6 +881,28 @@ The theming system uses CSS custom properties (variables) with a three-layer app
 --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
 ```
 
+#### Line Heights
+```css
+--line-height-tight: 1.25;
+--line-height-normal: 1.5;
+--line-height-relaxed: 1.75;
+```
+
+#### Shadows
+```css
+--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+```
+
+#### Border Radius
+```css
+--radius-sm: 0.25rem;   /* 4px */
+--radius-md: 0.375rem;  /* 6px */
+--radius-lg: 0.5rem;    /* 8px */
+--radius-full: 9999px;  /* Fully rounded */
+```
+
 ### Theme Color Variables
 
 **Location:** `/src/renderer/styles/themes.css`
@@ -889,30 +911,54 @@ The theming system uses CSS custom properties (variables) with a three-layer app
 Cool grays with sage green accent:
 ```css
 [data-theme='light'] {
+  /* Backgrounds */
   --bg-primary: #fafaf9;
   --bg-secondary: #ffffff;
   --bg-tertiary: #f5f5f4;
+  --bg-elevated: #ffffff;
 
+  /* Foreground */
   --fg-primary: #1c1917;
   --fg-secondary: #57534e;
   --fg-tertiary: #78716c;
+  --fg-muted: #a8a29e;
 
+  /* Accent - Sage */
   --accent-primary: #65735b;
   --accent-secondary: #7f8c75;
+  --accent-muted: #9ca899;
 
+  /* Borders */
   --border-subtle: #e7e5e4;
   --border-default: #d6d3d1;
+  --border-strong: #a8a29e;
 
+  /* Editor Specific */
   --editor-bg: #ffffff;
   --editor-fg: #1c1917;
+  --editor-line-number: #a8a29e;
   --editor-selection: rgba(101, 115, 91, 0.15);
   --editor-cursor: #65735b;
+  --editor-gutter-bg: #fafaf9;
 
+  /* Preview Specific */
   --preview-bg: #fafaf9;
   --preview-fg: #1c1917;
   --preview-heading: #0c0a09;
   --preview-link: #65735b;
   --preview-code-bg: #f5f5f4;
+  --preview-code-fg: #44403c;
+  --preview-blockquote-border: #d6d3d1;
+
+  /* UI Elements */
+  --divider-color: #e7e5e4;
+  --divider-hover: #d6d3d1;
+  --toolbar-bg: #ffffff;
+  --toolbar-border: #e7e5e4;
+
+  /* Interactive */
+  --hover-bg: #f5f5f4;
+  --active-bg: #e7e5e4;
 }
 ```
 
@@ -920,30 +966,54 @@ Cool grays with sage green accent:
 Warm neutrals with amber accent:
 ```css
 [data-theme='dark'] {
+  /* Backgrounds */
   --bg-primary: #1a1816;
   --bg-secondary: #221f1d;
   --bg-tertiary: #2a2624;
+  --bg-elevated: #2a2624;
 
+  /* Foreground */
   --fg-primary: #f5f1ed;
   --fg-secondary: #d4cfc9;
   --fg-tertiary: #a39e98;
+  --fg-muted: #78736e;
 
+  /* Accent - Warm Amber */
   --accent-primary: #d4a574;
   --accent-secondary: #c09660;
+  --accent-muted: #a8824e;
 
+  /* Borders */
   --border-subtle: #2a2624;
   --border-default: #3a3632;
+  --border-strong: #4a453f;
 
+  /* Editor Specific */
   --editor-bg: #221f1d;
   --editor-fg: #f5f1ed;
+  --editor-line-number: #78736e;
   --editor-selection: rgba(212, 165, 116, 0.15);
   --editor-cursor: #d4a574;
+  --editor-gutter-bg: #1a1816;
 
+  /* Preview Specific */
   --preview-bg: #1a1816;
   --preview-fg: #e8e4df;
   --preview-heading: #f5f1ed;
   --preview-link: #d4a574;
   --preview-code-bg: #2a2624;
+  --preview-code-fg: #d4cfc9;
+  --preview-blockquote-border: #3a3632;
+
+  /* UI Elements */
+  --divider-color: #2a2624;
+  --divider-hover: #3a3632;
+  --toolbar-bg: #221f1d;
+  --toolbar-border: #2a2624;
+
+  /* Interactive */
+  --hover-bg: #2a2624;
+  --active-bg: #3a3632;
 }
 ```
 
@@ -1003,22 +1073,117 @@ document.documentElement.setAttribute('data-theme', 'custom');
 
 | Variable | Purpose |
 |----------|---------|
+| **Backgrounds** | |
 | `--bg-primary` | Main background |
 | `--bg-secondary` | Secondary background (toolbar, elevated) |
 | `--bg-tertiary` | Tertiary background |
+| `--bg-elevated` | Elevated surfaces (modals, dropdowns) |
+| **Foreground** | |
 | `--fg-primary` | Primary text |
 | `--fg-secondary` | Secondary text (muted) |
 | `--fg-tertiary` | Tertiary text (very muted) |
+| `--fg-muted` | Most muted text (placeholders) |
+| **Accent** | |
 | `--accent-primary` | Primary accent (links, highlights) |
 | `--accent-secondary` | Secondary accent |
+| `--accent-muted` | Muted accent |
+| **Borders** | |
 | `--border-subtle` | Subtle borders |
 | `--border-default` | Default borders |
+| `--border-strong` | Strong/emphasized borders |
+| **Editor** | |
 | `--editor-bg` | Editor background |
 | `--editor-fg` | Editor text |
+| `--editor-line-number` | Line number color |
+| `--editor-selection` | Selection highlight |
+| `--editor-cursor` | Cursor color |
+| `--editor-gutter-bg` | Gutter background |
+| **Preview** | |
 | `--preview-bg` | Preview pane background |
 | `--preview-fg` | Preview pane text |
 | `--preview-heading` | Heading color in preview |
 | `--preview-link` | Link color in preview |
+| `--preview-code-bg` | Code block background |
+| `--preview-code-fg` | Code block text |
+| `--preview-blockquote-border` | Blockquote left border |
+| **UI Elements** | |
+| `--divider-color` | Split pane divider |
+| `--divider-hover` | Divider hover state |
+| `--toolbar-bg` | Toolbar background |
+| `--toolbar-border` | Toolbar bottom border |
+| **Interactive** | |
+| `--hover-bg` | Hover background |
+| `--active-bg` | Active/pressed background |
+
+---
+
+## Storage Keys Reference
+
+The application uses `localStorage` for persisting user preferences:
+
+| Key | Used By | Type | Description |
+|-----|---------|------|-------------|
+| `markdown-editor-theme` | `useTheme` | `'light' \| 'dark'` | User's theme preference |
+| `markdown-editor-keybinding-mode` | `useKeybindingMode` | `'default' \| 'vim' \| 'emacs'` | Editor keybinding mode |
+| `markdown-editor-custom-themes` | `useCustomThemes` | `CustomTheme[]` (JSON) | Array of saved custom themes |
+| `markdown-editor-active-custom-theme` | `useCustomThemes` | `string` | ID of currently active custom theme |
+| `markdown-editor-focus-mode` | `App` | `'true' \| 'false'` | Focus mode enabled state |
+| `markdown-editor-distraction-free-mode` | `App` | `'true' \| 'false'` | Distraction-free mode enabled state |
+| `split-position` | `SplitPane` | `number` (0-100) | Split pane divider position percentage |
+
+**Note:** The `split-position` key does not follow the `markdown-editor-` prefix convention for historical reasons.
+
+---
+
+## Utilities Reference
+
+### buildExportHtml
+
+Generates standalone HTML for export (HTML file or PDF).
+
+**Location:** `/src/renderer/utils/buildExportHtml.ts`
+
+**Signature:**
+```typescript
+function buildExportHtml(args: {
+  title: string;
+  theme: 'light' | 'dark';
+  bodyHtml: string;
+  cssVariablesOverride?: Record<string, string>;
+}): string;
+```
+
+**Parameters:**
+- `title` - Document title (escaped for HTML)
+- `theme` - Theme to apply (`'light'` or `'dark'`)
+- `bodyHtml` - Rendered markdown HTML content
+- `cssVariablesOverride` - Optional CSS variable overrides for custom themes
+
+**Returns:** Complete HTML document string with embedded CSS.
+
+**Behavior:**
+1. Escapes the title for safe HTML insertion
+2. Embeds all CSS (variables.css, themes.css, preview.css)
+3. Applies custom theme variables if provided
+4. Wraps content in preview container structure
+
+**Example:**
+```typescript
+import { buildExportHtml } from './utils/buildExportHtml';
+import { renderMarkdown } from './hooks/useMarkdown';
+
+const markdown = '# Hello World';
+const html = buildExportHtml({
+  title: 'My Document',
+  theme: 'dark',
+  bodyHtml: renderMarkdown(markdown),
+  cssVariablesOverride: {
+    '--bg-primary': '#000000'
+  }
+});
+
+// html is now a complete standalone HTML document
+```
 
 ---
 
