@@ -1,97 +1,175 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { EditorView, keymap, placeholder } from '@codemirror/view';
-import { EditorState, Prec } from '@codemirror/state';
+import { Compartment, EditorState, Prec } from '@codemirror/state';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language';
 import { oneDark } from '@codemirror/theme-one-dark';
+import { highlightSelectionMatches, openSearchPanel, search, searchKeymap } from '@codemirror/search';
+import { emacs } from '@replit/codemirror-emacs';
+import { vim } from '@replit/codemirror-vim';
+import { KeybindingMode } from '../hooks/useKeybindingMode';
 import '../styles/editor.css';
 
+interface CursorPosition {
+  line: number;
+  column: number;
+}
+
 interface EditorProps {
-  initialContent?: string;
+  content: string;
   onChange?: (content: string) => void;
+  onCursorChange?: (position: CursorPosition) => void;
   onRequestSave?: () => void;
   onRequestOpen?: () => void;
+  keybindingMode: KeybindingMode;
   theme: 'light' | 'dark';
 }
 
+function focusReplaceField(view: EditorView) {
+  requestAnimationFrame(() => {
+    const replaceInput = view.dom.querySelector('.cm-search input[name=replace]') as HTMLInputElement | null;
+    replaceInput?.focus();
+    replaceInput?.select();
+  });
+}
+
 export const Editor: React.FC<EditorProps> = ({
-  initialContent = '',
+  content,
   onChange,
+  onCursorChange,
   onRequestSave,
   onRequestOpen,
+  keybindingMode,
   theme
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
 
-  useEffect(() => {
-    if (!editorRef.current) return;
+  const themeCompartment = useRef(new Compartment()).current;
+  const keybindingCompartment = useRef(new Compartment()).current;
 
-    const extensions = [
+  const callbacksRef = useRef({ onChange, onCursorChange, onRequestSave, onRequestOpen });
+  callbacksRef.current = { onChange, onCursorChange, onRequestSave, onRequestOpen };
+
+  const suppressOnChangeRef = useRef(false);
+
+  const baseExtensions = useMemo(() => {
+    return [
       Prec.high(
         keymap.of([
           {
             key: 'Mod-o',
             run: () => {
-              onRequestOpen?.();
+              callbacksRef.current.onRequestOpen?.();
               return true;
             }
           },
           {
             key: 'Mod-s',
             run: () => {
-              onRequestSave?.();
+              callbacksRef.current.onRequestSave?.();
+              return true;
+            }
+          },
+          {
+            key: 'Mod-f',
+            run: (view) => {
+              openSearchPanel(view);
+              return true;
+            }
+          },
+          {
+            key: 'Mod-h',
+            run: (view) => {
+              openSearchPanel(view);
+              focusReplaceField(view);
               return true;
             }
           }
         ])
       ),
+      keybindingCompartment.of([]),
       history(),
-      keymap.of([...defaultKeymap, ...historyKeymap]),
+      search({ top: false }),
+      highlightSelectionMatches(),
+      keymap.of([...searchKeymap, ...defaultKeymap, ...historyKeymap]),
       markdown({ base: markdownLanguage }),
       syntaxHighlighting(defaultHighlightStyle),
       placeholder('Start writing...'),
       EditorView.lineWrapping,
+      themeCompartment.of([]),
       EditorView.updateListener.of((update) => {
-        if (update.docChanged && onChange) {
-          onChange(update.state.doc.toString());
+        if (update.docChanged && callbacksRef.current.onChange && !suppressOnChangeRef.current) {
+          callbacksRef.current.onChange(update.state.doc.toString());
+        }
+
+        if (update.selectionSet && callbacksRef.current.onCursorChange) {
+          const head = update.state.selection.main.head;
+          const line = update.state.doc.lineAt(head);
+          callbacksRef.current.onCursorChange({
+            line: line.number,
+            column: head - line.from + 1
+          });
         }
       })
     ];
+  }, [keybindingCompartment, themeCompartment]);
 
-    if (theme === 'dark') {
-      extensions.push(oneDark);
-    }
+  useEffect(() => {
+    if (!editorRef.current || viewRef.current) return;
 
     const state = EditorState.create({
-      doc: initialContent,
-      extensions,
+      doc: content,
+      extensions: baseExtensions
     });
 
     const view = new EditorView({
       state,
-      parent: editorRef.current,
+      parent: editorRef.current
     });
 
     viewRef.current = view;
 
     return () => {
       view.destroy();
+      viewRef.current = null;
     };
-  }, [onChange, onRequestOpen, onRequestSave, theme]);
+  }, [baseExtensions, content]);
 
   useEffect(() => {
-    if (viewRef.current && initialContent !== viewRef.current.state.doc.toString()) {
-      viewRef.current.dispatch({
-        changes: {
-          from: 0,
-          to: viewRef.current.state.doc.length,
-          insert: initialContent,
-        },
-      });
-    }
-  }, [initialContent]);
+    const view = viewRef.current;
+    if (!view) return;
+
+    const themeExtension = theme === 'dark' ? oneDark : [];
+    view.dispatch({
+      effects: themeCompartment.reconfigure(themeExtension)
+    });
+  }, [theme, themeCompartment]);
+
+  useEffect(() => {
+    const view = viewRef.current;
+    if (!view) return;
+
+    const extension = keybindingMode === 'vim' ? vim() : keybindingMode === 'emacs' ? emacs() : [];
+    view.dispatch({
+      effects: keybindingCompartment.reconfigure(extension)
+    });
+  }, [keybindingCompartment, keybindingMode]);
+
+  useEffect(() => {
+    const view = viewRef.current;
+    if (!view) return;
+
+    const current = view.state.doc.toString();
+    if (content === current) return;
+
+    suppressOnChangeRef.current = true;
+    view.dispatch({
+      changes: { from: 0, to: view.state.doc.length, insert: content }
+    });
+    suppressOnChangeRef.current = false;
+  }, [content]);
 
   return (
     <div className="editor-container">

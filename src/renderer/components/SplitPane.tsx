@@ -3,7 +3,8 @@ import './SplitPane.css';
 
 interface SplitPaneProps {
   left: React.ReactNode;
-  right: React.ReactNode;
+  right?: React.ReactNode;
+  showRight?: boolean;
   defaultSplit?: number; // Percentage (0-100)
   minSize?: number; // Minimum pane size in pixels
 }
@@ -11,6 +12,7 @@ interface SplitPaneProps {
 export const SplitPane: React.FC<SplitPaneProps> = ({
   left,
   right,
+  showRight = true,
   defaultSplit = 50,
   minSize = 200,
 }) => {
@@ -74,44 +76,51 @@ export const SplitPane: React.FC<SplitPaneProps> = ({
     }
   }, []);
 
+  const shouldShowRight = showRight && !!right;
+
   return (
-    <div
-      ref={containerRef}
-      className={`split-pane ${isDragging ? 'dragging' : ''}`}
-    >
-      <div className="split-pane-left" style={{ width: `${split}%` }}>
-        {left}
-      </div>
-      
-      <div
-        className="split-pane-divider"
-        onMouseDown={handleMouseDown}
-        role="separator"
-        aria-orientation="vertical"
-        aria-valuenow={split}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'ArrowLeft') {
-            setSplit(Math.max((minSize / containerRef.current!.offsetWidth) * 100, split - 1));
-          } else if (e.key === 'ArrowRight') {
-            setSplit(Math.min(100 - (minSize / containerRef.current!.offsetWidth) * 100, split + 1));
-          }
-        }}
-      >
-        <div className="split-pane-divider-handle">
-          <svg width="4" height="24" viewBox="0 0 4 24" fill="none">
-            <circle cx="2" cy="6" r="1" fill="currentColor" />
-            <circle cx="2" cy="12" r="1" fill="currentColor" />
-            <circle cx="2" cy="18" r="1" fill="currentColor" />
-          </svg>
+    <div ref={containerRef} className={`split-pane ${isDragging ? 'dragging' : ''}`}>
+      {shouldShowRight ? (
+        <>
+          <div className="split-pane-left" style={{ width: `${split}%` }}>
+            {left}
+          </div>
+
+          <div
+            className="split-pane-divider"
+            onMouseDown={handleMouseDown}
+            role="separator"
+            aria-orientation="vertical"
+            aria-valuenow={split}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowLeft') {
+                setSplit(Math.max((minSize / containerRef.current!.offsetWidth) * 100, split - 1));
+              } else if (e.key === 'ArrowRight') {
+                setSplit(Math.min(100 - (minSize / containerRef.current!.offsetWidth) * 100, split + 1));
+              }
+            }}
+          >
+            <div className="split-pane-divider-handle">
+              <svg width="4" height="24" viewBox="0 0 4 24" fill="none">
+                <circle cx="2" cy="6" r="1" fill="currentColor" />
+                <circle cx="2" cy="12" r="1" fill="currentColor" />
+                <circle cx="2" cy="18" r="1" fill="currentColor" />
+              </svg>
+            </div>
+          </div>
+
+          <div className="split-pane-right" style={{ width: `${100 - split}%` }}>
+            {right}
+          </div>
+        </>
+      ) : (
+        <div className="split-pane-left" style={{ width: '100%' }}>
+          {left}
         </div>
-      </div>
-      
-      <div className="split-pane-right" style={{ width: `${100 - split}%` }}>
-        {right}
-      </div>
+      )}
     </div>
   );
 };

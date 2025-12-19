@@ -1,0 +1,28 @@
+.status-bar {
+  height: var(--statusbar-height);
+  background-color: var(--toolbar-bg);
+  border-top: 1px solid var(--toolbar-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-md);
+  font-size: var(--font-size-xs);
+  color: var(--fg-tertiary);
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.status-bar-left,
+.status-bar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.status-item {
+  white-space: nowrap;
+}
+
+.status-divider {
+  opacity: 0.5;
+}

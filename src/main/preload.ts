@@ -24,6 +24,15 @@ type SetTitleArgs = {
   dirty: boolean;
 };
 
+type ExportArgs = {
+  html: string;
+  suggestedName?: string;
+};
+
+type ExportResult = {
+  filePath: string;
+} | null;
+
 type MenuEvent = 'menu:open' | 'menu:save' | 'menu:saveAs';
 
 type Unsubscribe = () => void;
@@ -32,6 +41,8 @@ const electronAPI = {
   openFile: (): Promise<OpenFileResult> => ipcRenderer.invoke('file:open'),
   saveFile: (args: SaveFileArgs): Promise<SaveFileResult> => ipcRenderer.invoke('file:save', args),
   saveFileAs: (args: SaveFileAsArgs): Promise<SaveFileResult> => ipcRenderer.invoke('file:saveAs', args),
+  exportHtml: (args: ExportArgs): Promise<ExportResult> => ipcRenderer.invoke('export:html', args),
+  exportPdf: (args: ExportArgs): Promise<ExportResult> => ipcRenderer.invoke('export:pdf', args),
   setTitle: (args: SetTitleArgs): Promise<void> => ipcRenderer.invoke('app:setTitle', args),
   onMenu: (event: MenuEvent, callback: () => void): Unsubscribe => {
     const handler = () => callback();

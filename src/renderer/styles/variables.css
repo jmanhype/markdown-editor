@@ -30,6 +30,8 @@
 
   /* Layout */
   --toolbar-height: 3rem;     /* 48px */
+  --tabbar-height: 2.25rem;
+  --statusbar-height: 1.75rem;
   --divider-width: 1px;
   --divider-handle-width: 12px;
 

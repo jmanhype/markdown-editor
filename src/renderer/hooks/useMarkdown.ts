@@ -23,7 +23,7 @@ DOMPurify.addHook('afterSanitizeAttributes', (node) => {
   }
 });
 
-function renderMarkdown(markdown: string): string {
+export function renderMarkdown(markdown: string): string {
   const rawHtml = md.render(markdown);
 
   return DOMPurify.sanitize(rawHtml, {

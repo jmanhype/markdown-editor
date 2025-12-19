@@ -1,0 +1,113 @@
+.tab-bar {
+  height: var(--tabbar-height);
+  background-color: var(--toolbar-bg);
+  border-bottom: 1px solid var(--toolbar-border);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0 var(--space-sm);
+  flex-shrink: 0;
+}
+
+.tab-bar-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  height: calc(var(--tabbar-height) - 8px);
+  padding: 0 var(--space-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--fg-secondary);
+  cursor: pointer;
+  flex: 0 0 auto;
+  max-width: 220px;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.tab:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--border-subtle);
+  color: var(--fg-primary);
+}
+
+.tab.active {
+  background-color: var(--active-bg);
+  border-color: var(--border-default);
+  color: var(--fg-primary);
+}
+
+.tab-title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.tab-dirty {
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+.tab-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-sm);
+  color: var(--fg-tertiary);
+}
+
+.tab:hover .tab-close {
+  color: var(--fg-secondary);
+}
+
+.tab-close:hover {
+  background-color: var(--hover-bg);
+  color: var(--fg-primary);
+}
+
+.tab-new {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--fg-secondary);
+  cursor: pointer;
+  flex: 0 0 auto;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.tab-new:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--border-subtle);
+  color: var(--fg-primary);
+}
+
+.tab-new:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px var(--accent-primary);
+}

@@ -79,9 +79,23 @@
     color var(--transition-fast);
 }
 
+.toolbar-keymap-badge {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: currentColor;
+  user-select: none;
+}
+
 .toolbar-button:hover {
   background-color: var(--hover-bg);
   border-color: var(--border-subtle);
+  color: var(--fg-primary);
+}
+
+.toolbar-button[aria-pressed='true'] {
+  background-color: var(--active-bg);
+  border-color: var(--border-default);
   color: var(--fg-primary);
 }
 

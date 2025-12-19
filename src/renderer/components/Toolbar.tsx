@@ -11,6 +11,14 @@ interface ToolbarProps {
   onOpen: () => void;
   onSave: () => void;
   onSaveAs: () => void;
+  onExportPdf: () => void;
+  onExportHtml: () => void;
+  keybindingMode: 'default' | 'vim' | 'emacs';
+  onToggleKeybindingMode: () => void;
+  focusMode: boolean;
+  onToggleFocusMode: () => void;
+  onToggleDistractionFree: () => void;
+  onOpenThemeBuilder: () => void;
 }
 
 export const Toolbar: React.FC<ToolbarProps> = ({
@@ -20,7 +28,15 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onToggleTheme,
   onOpen,
   onSave,
-  onSaveAs
+  onSaveAs,
+  onExportPdf,
+  onExportHtml,
+  keybindingMode,
+  onToggleKeybindingMode,
+  focusMode,
+  onToggleFocusMode,
+  onToggleDistractionFree,
+  onOpenThemeBuilder
 }) => {
   return (
     <div className="toolbar">
@@ -99,6 +115,137 @@ export const Toolbar: React.FC<ToolbarProps> = ({
               strokeLinecap="round"
               strokeLinejoin="round"
             />
+          </svg>
+        </button>
+
+        <button className="toolbar-button" onClick={onExportHtml} title="Export HTML" aria-label="Export HTML">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M14 2v6h6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M9 15h6M9 19h6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        <button className="toolbar-button" onClick={onExportPdf} title="Export PDF" aria-label="Export PDF">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M14 2v6h6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M8 16h2.5a1.5 1.5 0 1 0 0-3H8v6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M13 13h2a1 1 0 0 1 1 1v4"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        <button
+          className="toolbar-button"
+          onClick={onToggleKeybindingMode}
+          title={`Keybindings: ${keybindingMode} (click to cycle)`}
+          aria-label="Cycle keybinding mode"
+        >
+          <span className="toolbar-keymap-badge">
+            {keybindingMode === 'default' ? 'Std' : keybindingMode === 'vim' ? 'Vim' : 'Emacs'}
+          </span>
+        </button>
+
+        <button
+          className="toolbar-button"
+          onClick={onToggleFocusMode}
+          title="Focus mode (Cmd/Ctrl+Shift+L)"
+          aria-label="Toggle focus mode"
+          aria-pressed={focusMode}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        <button
+          className="toolbar-button"
+          onClick={onToggleDistractionFree}
+          title="Distraction-free (Cmd/Ctrl+Shift+D)"
+          aria-label="Toggle distraction-free mode"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M3 12h18"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            <path
+              d="M7 7h10M7 17h10"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+
+        <button
+          className="toolbar-button"
+          onClick={onOpenThemeBuilder}
+          title="Theme builder (Cmd/Ctrl+,)"
+          aria-label="Open theme builder"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M12 3a9 9 0 1 0 9 9c0-.55-.06-1.09-.18-1.61a3 3 0 0 0-3.7-3.7A6 6 0 0 1 12 18"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle cx="8.5" cy="10" r="1" fill="currentColor" />
+            <circle cx="12" cy="7.5" r="1" fill="currentColor" />
+            <circle cx="15.5" cy="10" r="1" fill="currentColor" />
+            <circle cx="10" cy="14.5" r="1" fill="currentColor" />
           </svg>
         </button>
 

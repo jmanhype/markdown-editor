@@ -27,6 +27,15 @@ type SaveFileResult = {
   filePath: string;
 } | null;
 
+type ExportArgs = {
+  html: string;
+  suggestedName?: string;
+};
+
+type ExportResult = {
+  filePath: string;
+} | null;
+
 type SetTitleArgs = {
   filePath: string | null;
   dirty: boolean;
@@ -138,6 +147,33 @@ function buildMenu(mainWindow: BrowserWindow): Menu {
   return Menu.buildFromTemplate(template);
 }
 
+function assertSenderIsMainWindow(event: Electron.IpcMainInvokeEvent, mainWindow: BrowserWindow) {
+  const senderWindow = BrowserWindow.fromWebContents(event.sender);
+  if (!senderWindow || senderWindow.id !== mainWindow.id) {
+    throw new Error('Unauthorized IPC sender');
+  }
+}
+
+async function withExportWindow<T>(html: string, run: (win: BrowserWindow) => Promise<T>): Promise<T> {
+  const exportWindow = new BrowserWindow({
+    show: false,
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true
+    }
+  });
+
+  try {
+    await exportWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`);
+    return await run(exportWindow);
+  } finally {
+    if (!exportWindow.isDestroyed()) {
+      exportWindow.close();
+    }
+  }
+}
+
 function registerIpcHandlers(mainWindow: BrowserWindow) {
   ipcMain.handle('file:open', async (): Promise<OpenFileResult> => {
     const result = await dialog.showOpenDialog(mainWindow, {
@@ -170,6 +206,43 @@ function registerIpcHandlers(mainWindow: BrowserWindow) {
 
     await fs.writeFile(result.filePath, args.content, 'utf8');
     mainWindow.setTitle(getAppTitle({ filePath: result.filePath, dirty: false }));
+    return { filePath: result.filePath };
+  });
+
+  ipcMain.handle('export:html', async (event, args: ExportArgs): Promise<ExportResult> => {
+    assertSenderIsMainWindow(event, mainWindow);
+
+    const result = await dialog.showSaveDialog(mainWindow, {
+      title: 'Export as HTML',
+      defaultPath: args.suggestedName ?? 'Untitled.html',
+      filters: [{ name: 'HTML', extensions: ['html'] }]
+    });
+
+    if (result.canceled || !result.filePath) return null;
+
+    await withExportWindow(args.html, (exportWindow) => exportWindow.webContents.savePage(result.filePath!, 'HTMLOnly'));
+    return { filePath: result.filePath };
+  });
+
+  ipcMain.handle('export:pdf', async (event, args: ExportArgs): Promise<ExportResult> => {
+    assertSenderIsMainWindow(event, mainWindow);
+
+    const result = await dialog.showSaveDialog(mainWindow, {
+      title: 'Export as PDF',
+      defaultPath: args.suggestedName ?? 'Untitled.pdf',
+      filters: [{ name: 'PDF', extensions: ['pdf'] }]
+    });
+
+    if (result.canceled || !result.filePath) return null;
+
+    const pdfData = await withExportWindow(args.html, (exportWindow) =>
+      exportWindow.webContents.printToPDF({
+        printBackground: true,
+        preferCSSPageSize: true
+      })
+    );
+
+    await fs.writeFile(result.filePath, pdfData);
     return { filePath: result.filePath };
   });
 
