@@ -2,123 +2,159 @@
 
 A clean, minimal Electron-based markdown editor with live preview, featuring an editorial minimalism aesthetic.
 
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Electron](https://img.shields.io/badge/electron-28.0.0-47848F.svg)
+![React](https://img.shields.io/badge/react-18.2.0-61DAFB.svg)
+
 ## Features
 
+### Core Editor
 - **Split-Pane Interface**: Resizable CodeMirror editor on the left, live preview on the right
-- **Dark/Light Themes**: Beautiful editorial themes with smooth transitions
-  - Light: Cool grays with sage accent
-  - Dark: Warm neutrals with amber accent
 - **Live Preview**: Real-time markdown rendering with syntax highlighting
-- **Responsive Layout**: Adapts to different window sizes (stacks vertically on mobile)
-- **Clean Typography**: 
-  - Editor: JetBrains Mono (monospace)
-  - Preview: Crimson Pro (serif)
-- **Keyboard Shortcuts**: Standard CodeMirror shortcuts (Ctrl+Z undo, etc.)
+- **Multi-Tab Support**: Work on multiple documents simultaneously
+- **File Operations**: Open, save, and create new files via native dialogs
+
+### Themes & Customization
+- **Dark/Light Themes**: Beautiful editorial themes with smooth transitions
+  - Light: Cool grays with sage green accent
+  - Dark: Warm neutrals with amber accent
+- **Custom Theme Builder**: Create and save your own color schemes
+- **System Preference Detection**: Automatically matches OS theme
+
+### Editor Modes
+- **Vim Mode**: Full Vim keybindings support
+- **Emacs Mode**: Emacs keybindings support
+- **Default Mode**: Standard editor behavior
+
+### Focus Features
+- **Focus Mode**: Hide preview pane to concentrate on writing
+- **Distraction-Free Mode**: Hide toolbar for minimal interface
+
+### Export
+- **Export to HTML**: Standalone HTML files with embedded styles
+- **Export to PDF**: Print-ready PDF documents
+
+### Statistics
+- **Word Count**: Real-time word count in status bar
+- **Character Count**: Live character tracking
+- **Reading Time**: Estimated reading time (200 WPM)
+
+## Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Run in development mode
+npm run electron:dev
+
+# Build for production
+npm run build && npm run electron:build
+```
+
+## Keyboard Shortcuts
+
+| Action | Windows/Linux | macOS |
+|--------|---------------|-------|
+| New File | Ctrl+N | ⌘N |
+| Open File | Ctrl+O | ⌘O |
+| Save File | Ctrl+S | ⌘S |
+| Export HTML | Ctrl+E | ⌘E |
+| Export PDF | Ctrl+Shift+E | ⌘⇧E |
+| Toggle Theme | Ctrl+Shift+T | ⌘⇧T |
+| Focus Mode | Ctrl+Shift+F | ⌘⇧F |
+| Distraction-Free | Ctrl+Shift+D | ⌘⇧D |
 
 ## Architecture
 
-### Component Structure
-
 ```
-src/renderer/
-├── components/
-│   ├── Editor.tsx          # CodeMirror wrapper
-│   ├── Preview.tsx         # Markdown preview
-│   ├── SplitPane.tsx       # Resizable split container
-│   ├── Toolbar.tsx         # Top bar with actions
-│   └── ThemeToggle.tsx     # Theme switcher
-├── hooks/
-│   ├── useTheme.ts         # Theme state + localStorage
-│   └── useMarkdown.ts      # Markdown parsing + sanitization
-├── styles/
-│   ├── variables.css       # Design tokens
-│   ├── themes.css          # Light/dark themes
-│   ├── editor.css          # CodeMirror customization
-│   └── preview.css         # Preview styling
-├── App.tsx
-└── main.tsx
+src/
+├── main/
+│   ├── main.ts           # Electron main process
+│   └── preload.ts        # Context bridge (IPC)
+│
+└── renderer/
+    ├── components/
+    │   ├── Editor.tsx        # CodeMirror wrapper
+    │   ├── Preview.tsx       # Markdown preview
+    │   ├── SplitPane.tsx     # Resizable split container
+    │   ├── Toolbar.tsx       # Top bar with actions
+    │   ├── TabBar.tsx        # Multi-document tabs
+    │   ├── StatusBar.tsx     # Word count & stats
+    │   ├── ThemeToggle.tsx   # Theme switcher
+    │   └── ThemeBuilder.tsx  # Custom theme creator
+    │
+    ├── hooks/
+    │   ├── useTheme.ts           # Theme state management
+    │   ├── useKeybindingMode.ts  # Vim/Emacs/Default modes
+    │   ├── useMarkdown.ts        # Markdown parsing
+    │   └── useCustomThemes.ts    # Custom theme storage
+    │
+    ├── styles/
+    │   ├── variables.css     # Design tokens
+    │   ├── themes.css        # Light/dark themes
+    │   └── *.css             # Component styles
+    │
+    ├── utils/
+    │   └── buildExportHtml.ts  # Export HTML builder
+    │
+    ├── App.tsx
+    └── main.tsx
 ```
 
-### CSS Strategy
+## Documentation
 
-**Design System Approach:**
+For comprehensive API documentation, component references, and customization guides, see **[DOCUMENTATION.md](./DOCUMENTATION.md)**.
 
-1. **CSS Custom Properties (Variables)**: All colors, spacing, typography defined as CSS variables in `variables.css`
-2. **Theme Switching**: `[data-theme='light|dark']` attribute on `<html>` toggles entire theme
-3. **Smooth Transitions**: All theme changes animate smoothly (250ms cubic-bezier)
-4. **Component-Scoped Styles**: Each component has its own CSS file, imported alongside the component
-5. **No CSS-in-JS**: Pure CSS for maximum performance and simplicity
+Topics covered:
+- IPC Channel Reference
+- Component API Reference
+- Custom Hooks API
+- Theming System
+- CSS Variables
+- Storage Keys
+- Development Guide
 
-**Key Patterns:**
-
-- **Design Tokens**: Spacing scale (8px grid), typography scale, semantic color names
-- **Theme Variables**: Different values per theme (e.g., `--bg-primary`, `--fg-primary`)
-- **Component Variables**: Component-specific values (e.g., `--toolbar-height`, `--divider-width`)
-- **Responsive**: Mobile-first with `@media (max-width: 768px)` for tablet/mobile
-
-### State Management
-
-- **Theme**: `useTheme` hook manages theme state, persists to localStorage, listens to system preference
-- **Content**: `useMarkdown` hook manages editor content and parsed HTML
-- **Split Position**: Saved to localStorage, loaded on mount
-
-### Dependencies
+## Dependencies
 
 **Core:**
-- `react` + `react-dom`: UI framework
-- `@codemirror/*`: Editor (view, state, commands, language, theme)
-- `marked`: Markdown parser
-- `dompurify`: HTML sanitization
+- `react` + `react-dom` - UI framework
+- `@codemirror/*` - Editor (view, state, commands, vim, emacs)
+- `marked` - Markdown parser
+- `dompurify` - HTML sanitization
+- `highlight.js` - Syntax highlighting
 
-**Dev:**
-- `vite`: Build tool + dev server
-- `typescript`: Type safety
-- `electron`: Desktop app wrapper
-
-## Installation
-
-```bash
-npm install
-```
-
-## Development
-
-```bash
-# Run Vite dev server
-npm run dev
-
-# Run Electron app with hot reload
-npm run electron:dev
-```
-
-## Building
-
-```bash
-# Build for production
-npm run build
-
-# Package Electron app
-npm run electron:build
-```
+**Build:**
+- `vite` - Build tool + dev server
+- `typescript` - Type safety
+- `electron` + `electron-builder` - Desktop packaging
 
 ## Customization
 
-### Adding New Themes
+### Creating Custom Themes
 
-1. Add theme colors in `src/renderer/styles/themes.css`:
-```css
-[data-theme='custom'] {
-  --bg-primary: ...;
-  --fg-primary: ...;
-  /* etc */
-}
+Use the built-in Theme Builder (paintbrush icon in toolbar) to create custom themes, or add them programmatically:
+
+```typescript
+import { useCustomThemes } from './hooks/useCustomThemes';
+
+const { saveTheme } = useCustomThemes();
+
+saveTheme({
+  id: 'my-theme',
+  name: 'My Custom Theme',
+  baseTheme: 'dark',
+  variables: {
+    '--bg-primary': '#1a1a2e',
+    '--accent-primary': '#e94560'
+  }
+});
 ```
-
-2. Update `Theme` type in `useTheme.ts`
 
 ### Changing Fonts
 
-Update font imports in `index.html` and font variables in `variables.css`:
+Update font imports in `index.html` and variables in `variables.css`:
+
 ```css
 :root {
   --font-mono: 'YourMono', monospace;
@@ -126,43 +162,14 @@ Update font imports in `index.html` and font variables in `variables.css`:
 }
 ```
 
-### Adjusting Layout
+## Roadmap
 
-- **Split ratio**: Change `defaultSplit` prop in `App.tsx`
-- **Min pane size**: Change `minSize` prop in `App.tsx`
-- **Toolbar height**: Adjust `--toolbar-height` in `variables.css`
-
-## Responsive Behavior
-
-- **Desktop (>768px)**: Side-by-side split panes
-- **Mobile (≤768px)**: Vertical stack (50/50 height split)
-- **Divider**: Horizontal on desktop, vertical on mobile
-
-## Accessibility
-
-- **Keyboard Navigation**: Full keyboard support for editor, theme toggle, and split pane
-- **ARIA Labels**: All interactive elements have proper labels
-- **Focus Indicators**: Clear focus states for all controls
-- **Color Contrast**: WCAG AA compliant color combinations
-
-## Performance
-
-- **No Runtime CSS-in-JS**: Pure CSS for zero JS overhead
-- **Optimized Transitions**: Only animating transform and opacity where possible
-- **Lazy Markdown Parsing**: Only parses on content change
-- **HTML Sanitization**: Prevents XSS while allowing rich formatting
-
-## Future Enhancements
-
-- [ ] File system integration (open/save via Electron IPC)
-- [ ] Export to PDF/HTML
-- [ ] Vim/Emacs keybindings toggle
-- [ ] Custom themes builder
-- [ ] Focus mode (hide preview)
-- [ ] Distraction-free mode (hide toolbar)
-- [ ] Word count statistics
-- [ ] Find & replace
-- [ ] Multi-document tabs
+- [ ] Find & Replace
+- [ ] Markdown table editor
+- [ ] Image paste/drag-drop
+- [ ] Spell checking
+- [ ] Auto-save
+- [ ] Recent files menu
 
 ## License
 
