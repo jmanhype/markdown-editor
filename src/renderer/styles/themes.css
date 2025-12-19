@@ -1,0 +1,167 @@
+/* Theme Definitions - Editorial Minimalism */
+
+/* Light Theme - Cool Grays with Sage Accent */
+[data-theme='light'] {
+  /* Backgrounds */
+  --bg-primary: #fafaf9;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f5f5f4;
+  --bg-elevated: #ffffff;
+  
+  /* Foreground */
+  --fg-primary: #1c1917;
+  --fg-secondary: #57534e;
+  --fg-tertiary: #78716c;
+  --fg-muted: #a8a29e;
+  
+  /* Accent - Sage */
+  --accent-primary: #65735b;
+  --accent-secondary: #7f8c75;
+  --accent-muted: #9ca899;
+  
+  /* Borders */
+  --border-subtle: #e7e5e4;
+  --border-default: #d6d3d1;
+  --border-strong: #a8a29e;
+  
+  /* Editor Specific */
+  --editor-bg: #ffffff;
+  --editor-fg: #1c1917;
+  --editor-line-number: #a8a29e;
+  --editor-selection: rgba(101, 115, 91, 0.15);
+  --editor-cursor: #65735b;
+  --editor-gutter-bg: #fafaf9;
+  
+  /* Preview Specific */
+  --preview-bg: #fafaf9;
+  --preview-fg: #1c1917;
+  --preview-heading: #0c0a09;
+  --preview-link: #65735b;
+  --preview-code-bg: #f5f5f4;
+  --preview-code-fg: #44403c;
+  --preview-blockquote-border: #d6d3d1;
+  
+  /* UI Elements */
+  --divider-color: #e7e5e4;
+  --divider-hover: #d6d3d1;
+  --toolbar-bg: #ffffff;
+  --toolbar-border: #e7e5e4;
+  
+  /* Interactive */
+  --hover-bg: #f5f5f4;
+  --active-bg: #e7e5e4;
+  
+  color-scheme: light;
+}
+
+/* Dark Theme - Warm Neutrals with Amber Accent */
+[data-theme='dark'] {
+  /* Backgrounds */
+  --bg-primary: #1a1816;
+  --bg-secondary: #221f1d;
+  --bg-tertiary: #2a2624;
+  --bg-elevated: #2a2624;
+  
+  /* Foreground */
+  --fg-primary: #f5f1ed;
+  --fg-secondary: #d4cfc9;
+  --fg-tertiary: #a39e98;
+  --fg-muted: #78736e;
+  
+  /* Accent - Warm Amber */
+  --accent-primary: #d4a574;
+  --accent-secondary: #c09660;
+  --accent-muted: #a8824e;
+  
+  /* Borders */
+  --border-subtle: #2a2624;
+  --border-default: #3a3632;
+  --border-strong: #4a453f;
+  
+  /* Editor Specific */
+  --editor-bg: #221f1d;
+  --editor-fg: #f5f1ed;
+  --editor-line-number: #78736e;
+  --editor-selection: rgba(212, 165, 116, 0.15);
+  --editor-cursor: #d4a574;
+  --editor-gutter-bg: #1a1816;
+  
+  /* Preview Specific */
+  --preview-bg: #1a1816;
+  --preview-fg: #e8e4df;
+  --preview-heading: #f5f1ed;
+  --preview-link: #d4a574;
+  --preview-code-bg: #2a2624;
+  --preview-code-fg: #d4cfc9;
+  --preview-blockquote-border: #3a3632;
+  
+  /* UI Elements */
+  --divider-color: #2a2624;
+  --divider-hover: #3a3632;
+  --toolbar-bg: #221f1d;
+  --toolbar-border: #2a2624;
+  
+  /* Interactive */
+  --hover-bg: #2a2624;
+  --active-bg: #3a3632;
+  
+  color-scheme: dark;
+}
+
+/* Base Styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--fg-primary);
+  background-color: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: 
+    background-color var(--transition-base),
+    color var(--transition-base);
+}
+
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
+}
+
+/* Selection */
+::selection {
+  background-color: var(--editor-selection);
+  color: var(--fg-primary);
+}

@@ -1,0 +1,185 @@
+/* CodeMirror Editor Customization */
+
+.editor-container {
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--editor-bg);
+  transition: background-color var(--transition-base);
+}
+
+/* CodeMirror Base */
+.cm-editor {
+  height: 100%;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  background-color: var(--editor-bg);
+  color: var(--editor-fg);
+}
+
+.cm-scroller {
+  overflow: auto;
+  font-family: var(--font-mono);
+  padding: var(--space-2xl) var(--space-xl);
+}
+
+/* Gutters */
+.cm-gutters {
+  background-color: var(--editor-gutter-bg);
+  border-right: 1px solid var(--border-subtle);
+  color: var(--editor-line-number);
+  padding-right: var(--space-sm);
+  transition: background-color var(--transition-base);
+}
+
+.cm-lineNumbers .cm-gutterElement {
+  min-width: 3ch;
+  text-align: right;
+  padding-right: var(--space-md);
+  font-size: var(--font-size-sm);
+  color: var(--editor-line-number);
+}
+
+/* Active Line */
+.cm-activeLine {
+  background-color: transparent;
+}
+
+.cm-activeLineGutter {
+  background-color: transparent;
+  color: var(--fg-secondary);
+}
+
+/* Cursor */
+.cm-cursor,
+.cm-cursor-primary {
+  border-left-color: var(--editor-cursor);
+  border-left-width: 2px;
+}
+
+.cm-cursor-secondary {
+  border-left-color: var(--accent-muted);
+}
+
+/* Selection */
+.cm-selectionBackground,
+.cm-content ::selection {
+  background-color: var(--editor-selection) !important;
+}
+
+.cm-focused .cm-selectionBackground {
+  background-color: var(--editor-selection) !important;
+}
+
+/* Search Match */
+.cm-searchMatch {
+  background-color: var(--accent-muted);
+  outline: 1px solid var(--accent-primary);
+}
+
+.cm-searchMatch-selected {
+  background-color: var(--accent-primary);
+}
+
+/* Markdown Syntax Highlighting */
+.cm-content {
+  caret-color: var(--editor-cursor);
+}
+
+/* Headers */
+.cm-header {
+  font-weight: 600;
+  color: var(--preview-heading);
+}
+
+.cm-header-1 { font-size: 1.75em; line-height: 1.3; }
+.cm-header-2 { font-size: 1.5em; line-height: 1.35; }
+.cm-header-3 { font-size: 1.25em; line-height: 1.4; }
+.cm-header-4 { font-size: 1.1em; line-height: 1.45; }
+.cm-header-5 { font-size: 1em; line-height: 1.5; }
+.cm-header-6 { font-size: 0.95em; line-height: 1.5; }
+
+/* Emphasis */
+.cm-em {
+  font-style: italic;
+  color: var(--fg-primary);
+}
+
+.cm-strong {
+  font-weight: 600;
+  color: var(--fg-primary);
+}
+
+/* Links */
+.cm-link {
+  color: var(--preview-link);
+  text-decoration: none;
+}
+
+.cm-url {
+  color: var(--fg-tertiary);
+  text-decoration: underline;
+}
+
+/* Code */
+.cm-inline-code {
+  font-family: var(--font-mono);
+  background-color: var(--preview-code-bg);
+  padding: 0.125rem 0.25rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9em;
+}
+
+/* Lists */
+.cm-list {
+  color: var(--accent-primary);
+}
+
+/* Quotes */
+.cm-quote {
+  color: var(--fg-tertiary);
+  font-style: italic;
+}
+
+/* Horizontal Rule */
+.cm-hr {
+  color: var(--border-default);
+}
+
+/* Comments/Meta */
+.cm-comment,
+.cm-meta {
+  color: var(--fg-muted);
+}
+
+/* Focused State */
+.cm-focused {
+  outline: none;
+}
+
+/* Placeholder */
+.cm-placeholder {
+  color: var(--fg-muted);
+  font-style: italic;
+}
+
+/* Fold Gutters */
+.cm-foldGutter {
+  opacity: 0.5;
+  transition: opacity var(--transition-fast);
+}
+
+.cm-gutters:hover .cm-foldGutter {
+  opacity: 1;
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  .cm-scroller {
+    padding: var(--space-lg) var(--space-md);
+  }
+  
+  .cm-editor {
+    font-size: var(--font-size-sm);
+  }
+}

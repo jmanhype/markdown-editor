@@ -1,0 +1,129 @@
+.split-pane {
+  display: flex;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.split-pane-left,
+.split-pane-right {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.split-pane-divider {
+  width: var(--divider-handle-width);
+  height: 100%;
+  position: relative;
+  cursor: col-resize;
+  user-select: none;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background-color var(--transition-fast);
+}
+
+.split-pane-divider::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: var(--divider-width);
+  background-color: var(--divider-color);
+  transform: translateX(-50%);
+  transition: background-color var(--transition-fast);
+}
+
+.split-pane-divider:hover::before,
+.split-pane-divider:focus::before {
+  background-color: var(--divider-hover);
+}
+
+.split-pane-divider:focus {
+  outline: none;
+}
+
+.split-pane-divider:focus::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: var(--accent-primary);
+  opacity: 0.1;
+}
+
+.split-pane-divider-handle {
+  position: relative;
+  z-index: 2;
+  color: var(--fg-muted);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.split-pane-divider:hover .split-pane-divider-handle,
+.split-pane-divider:focus .split-pane-divider-handle {
+  opacity: 0.6;
+}
+
+.split-pane.dragging .split-pane-divider-handle {
+  opacity: 1;
+}
+
+.split-pane.dragging {
+  cursor: col-resize;
+}
+
+.split-pane.dragging * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
+/* Responsive: Stack vertically on mobile */
+@media (max-width: 768px) {
+  .split-pane {
+    flex-direction: column;
+  }
+  
+  .split-pane-left,
+  .split-pane-right {
+    width: 100% !important;
+  }
+  
+  .split-pane-left {
+    height: 50% !important;
+  }
+  
+  .split-pane-right {
+    height: 50% !important;
+  }
+  
+  .split-pane-divider {
+    width: 100%;
+    height: var(--divider-handle-width);
+    cursor: row-resize;
+  }
+  
+  .split-pane-divider::before {
+    left: 0;
+    right: 0;
+    top: 50%;
+    width: auto;
+    height: var(--divider-width);
+    transform: translateY(-50%);
+  }
+  
+  .split-pane-divider-handle svg {
+    transform: rotate(90deg);
+  }
+  
+  .split-pane.dragging {
+    cursor: row-resize;
+  }
+}

@@ -1,0 +1,129 @@
+.toolbar {
+  height: var(--toolbar-height);
+  background-color: var(--toolbar-bg);
+  border-bottom: 1px solid var(--toolbar-border);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-md);
+  gap: var(--space-md);
+  flex-shrink: 0;
+  -webkit-app-region: drag; /* Allow dragging window on macOS/Windows */
+  transition: 
+    background-color var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.toolbar-section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  -webkit-app-region: no-drag; /* Disable drag on interactive elements */
+}
+
+.toolbar-left {
+  flex: 0 0 auto;
+}
+
+.toolbar-center {
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+.toolbar-right {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.toolbar-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--fg-secondary);
+  user-select: none;
+}
+
+.toolbar-title svg {
+  color: var(--accent-primary);
+}
+
+.toolbar-app-name {
+  color: var(--fg-secondary);
+}
+
+.toolbar-file-name {
+  color: var(--fg-primary);
+  font-weight: 600;
+  max-width: 360px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toolbar-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--fg-secondary);
+  cursor: pointer;
+  transition: 
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.toolbar-button:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--border-subtle);
+  color: var(--fg-primary);
+}
+
+.toolbar-button:active {
+  background-color: var(--active-bg);
+}
+
+.toolbar-button:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px var(--accent-primary);
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background-color: var(--border-subtle);
+  margin: 0 var(--space-xs);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .toolbar {
+    padding: 0 var(--space-sm);
+    gap: var(--space-sm);
+  }
+  
+  .toolbar-app-name {
+    display: none;
+  }
+
+  .toolbar-file-name {
+    max-width: 160px;
+  }
+  
+  .toolbar-button {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .toolbar-button svg {
+    width: 16px;
+    height: 16px;
+  }
+}
