@@ -254,9 +254,17 @@ markdown-editor/
 - [ ] Auto-save
 - [ ] Recent files menu
 
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | System architecture, process model, security |
+| [docs/API.md](./docs/API.md) | IPC channels, components, hooks reference |
+| [docs/CONFIGURATION.md](./docs/CONFIGURATION.md) | Theming, CSS variables, storage keys |
+| [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md) | Development guide, project structure |
+
 ## References
 
-- [DOCUMENTATION.md](./DOCUMENTATION.md) - Full API documentation
 - [Electron Documentation](https://www.electronjs.org/docs)
 - [CodeMirror 6](https://codemirror.net/)
 - [Marked.js](https://marked.js.org/)
